@@ -1,0 +1,25 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  APP_ENV_FILE: .env
+
+
+before_script:
+  - apk add --no-cache docker-compose
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - source .env
+    - pwd
+    - docker-compose up -d # Start services
+    - sleep 1m
+    - docker-compose exec php php artisan test # Run Laravel tests
+    - docker-compose down # Stop services

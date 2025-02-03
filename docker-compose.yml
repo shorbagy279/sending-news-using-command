@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Php server
+  php:
+    build:
+      context: .
+      args:
+        - APP_ENV=${APP_ENV}
+    container_name: php
+    environment:
+      - APP_ENV=${APP_ENV}
+      - CONTAINER_ROLE=app
+    working_dir: /var/www
+    # volumes:
+    #   - ./:/var/www
+    ports:
+      - 8000:8000
+    depends_on:
+      - database
+      - redis
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000", "--env=.env"]
+
+
+
+
+  # Database server
+  database:
+    image: mysql:8.0.40
+    container_name: database
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+
+  # Redis server
+  redis:
+    image: redis:alpine
+    container_name: redis_
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+       - 6380:6379
+
+volumes:
+  db-data: ~
