@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/var/www/docker/wait-for-it.sh database:3307 --timeout=30 --strict
+/var/www/docker/wait-for-it.sh database:3306 --timeout=30 --strict
 
     php artisan migrate
     php artisan cache:clear
